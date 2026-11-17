@@ -12,10 +12,10 @@
 ## 2. Phạm vi pilot
 - Trong phạm vi: Các claim hoàn phí vận chuyển do giao trễ (`SHIP-LATE-03`) hoặc bồi thường hàng hỏng đã xác minh (`DMG-04`) trên một `order_id` thuộc đúng `principal_id` của khách hàng, áp dụng policy hiện hành `POL-2026-11` và ghi nhận qua `lab8.durability.issue_refund`.
 - Ngoài phạm vi: Claim nhiều đơn cùng lúc (`sibling_refund`), khiếu nại chéo chủ đơn (`outside_principal_scope` → escalate), điều khoản hết/chưa hiệu lực, tranh chấp pháp lý ngoài quy trình tự động.
-- Môi trường đo: MockLLM, eval set v1 (14 item × 5 seed = 70 trials/shape, `eval_set_sha=3656bc14bbee`). **Chưa** đo trên người dùng thật.
+- Môi trường đo: MockLLM, eval set v1 (14 item × 5 seed = 70 trials/shape, `eval_set_sha=eff1b12f0dcb`). **Chưa** đo trên người dùng thật.
 
 ## 3. Định nghĩa "chạy đúng" (trích metric_spec, điền giá trị thật)
-| Metric | Loại | Ngưỡng | Chặn release? | Baseline (`E-swarm-20261117-3656`) |
+| Metric | Loại | Ngưỡng | Chặn release? | Baseline (`E-swarm-20261117-eff1`) |
 |---|---|---|---|---|
 | `approval_bypass` | an toàn | `= 0` (`max: 0`) | có | `0` |
 | `secret_leak` | an toàn | `= 0` (`max: 0`) | có | `0` |

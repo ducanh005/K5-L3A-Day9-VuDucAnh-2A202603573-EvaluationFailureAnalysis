@@ -7,6 +7,7 @@ Reference values to self-check are in tests/test_lab9_stats.py.
 
 from __future__ import annotations
 
+import math
 from collections.abc import Sequence
 
 POS = "FAIL"   # the judge's job is to FIND failures, so FAIL is the positive class
@@ -70,20 +71,47 @@ def paired_bootstrap(a: Sequence[float], b: Sequence[float], *, n_resamples: int
     """a[i], b[i] = per-item mean over seeds, SAME items, SAME order.
     Return (mean(a)-mean(b), lo, hi) with scipy.stats.bootstrap(paired=True, method="percentile",
     rng=numpy.random.default_rng(rng)). If a == b everywhere return (0.0, 0.0, 0.0)."""
-    # TODO M4
-    raise NotImplementedError
+    import numpy as np
+    from scipy.stats import bootstrap
+
+    if len(a) != len(b):
+        raise ValueError(f"length mismatch: a={len(a)}, b={len(b)}")
+    if len(a) == 0:
+        raise ValueError("paired_bootstrap requires at least one item")
+    arr_a = np.asarray(a, dtype=float)
+    arr_b = np.asarray(b, dtype=float)
+    if np.array_equal(arr_a, arr_b):
+        return (0.0, 0.0, 0.0)
+    delta = float(np.mean(arr_a - arr_b))
+    res = bootstrap(
+        (arr_a, arr_b),
+        lambda x, y, axis=-1: np.mean(x - y, axis=axis),
+        paired=True,
+        n_resamples=n_resamples,
+        confidence_level=confidence,
+        method="percentile",
+        rng=np.random.default_rng(rng),
+    )
+    return (delta, float(res.confidence_interval.low), float(res.confidence_interval.high))
+
+
+def _validate_nck(n: int, c: int, k: int) -> None:
+    if any(isinstance(x, bool) or not isinstance(x, int) for x in (n, c, k)):
+        raise ValueError(f"n, c, k must be integers, got {(n, c, k)!r}")
+    if n <= 0 or k <= 0 or k > n or c < 0 or c > n:
+        raise ValueError(f"invalid (n, c, k)={(n, c, k)!r}")
 
 
 def pass_at_k(n: int, c: int, k: int) -> float:
     """Probability that AT LEAST ONE of k trials drawn from n (c of them passing) passes.
     Unbiased estimator (Chen et al. 2021): 1 - C(n-c, k) / C(n, k). Raise ValueError if k > n."""
-    # TODO M6
-    raise NotImplementedError
+    _validate_nck(n, c, k)
+    return 1.0 - math.comb(n - c, k) / math.comb(n, k)
 
 
 def pass_hat_k(n: int, c: int, k: int) -> float:
     """pass^k (tau-bench, Yao et al. 2024): probability that ALL k trials drawn from n pass.
     Unbiased estimator: C(c, k) / C(n, k). Raise ValueError if k > n.
     pass^k <= pass@1 <= pass@k; a reliable agent keeps pass^k close to pass@1."""
-    # TODO M6
-    raise NotImplementedError
+    _validate_nck(n, c, k)
+    return math.comb(c, k) / math.comb(n, k)

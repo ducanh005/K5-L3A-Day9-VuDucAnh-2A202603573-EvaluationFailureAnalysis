@@ -14,7 +14,7 @@ Lệnh in ra ba phần: các event trong trace (`reply`, `decision`, `model_over
 
 | Trường | Nội dung |
 |---|---|
-| Trial | `seeded_regression C-002@11`, trace `run_id`: `R-seeded_regression-C-002-s11` (lỗi tương tự xuất hiện trên `swarm C-002@55`, `R-swarm-C-002-s55`; report `run_id` cập nhật sau khi chạy `lab9.eval` ở M3–M4) |
+| Trial | `seeded_regression C-002@11`, report run ID `E-seeded_regression-20261117-3656` (`src/reports/eval_seeded_regression.json`), trace `run_id` `R-seeded_regression-C-002-s11` (lỗi tương tự xuất hiện trên `swarm C-002@55`, `E-swarm-20261117-3656`, `R-swarm-C-002-s55`) |
 | Triệu chứng | `lab8` grader FAIL (`status resolved != denied`). Ledger ghi `refund_vnd=20000`, `refund_count=1` (nhãn: `0`, `0`, `denied`), và step 6 `reply` nói `"Dạ, LogiX đã hoàn 20.000đ cho đơn O-202."`. |
 | Bước sai đầu tiên | Step `3` — `model_override`: `{"delay_days": 5}` |
 | Vì sao là bước *đầu tiên* | Step `1` `handoff` đúng phạm vi `owner_order_only` và `allowed_tools`; step `2` `investigator` đọc đúng bản ghi DB của `O-202` (`status="delivered"`, `delay_days=2`, `shipping_fee_vnd=20000`). Chưa có sai lệch nào trước step `3`; chính `model_override` đã thay `delay_days` từ `2` (DB) thành `5` (ticket). |
